@@ -454,17 +454,7 @@ resource "aws_emr_instance_group" "task" {
   autoscaling_policy = var.task_instance_group_autoscaling_policy
 }
 
-module "dns_master" {
-  source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.0"
 
-  enabled  = var.zone_id != null && var.zone_id != "" ? true : false
-  dns_name = var.master_dns_name != null && var.master_dns_name != "" ? var.master_dns_name : "emr-master-${module.this.name}"
-  zone_id  = var.zone_id
-  records  = coalescelist(aws_emr_cluster.default.*.master_public_dns, [""])
-
-  context = module.this.context
-}
 
 # https://www.terraform.io/docs/providers/aws/r/vpc_endpoint.html
 # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-clusters-in-a-vpc.html

@@ -18,9 +18,7 @@ Template repository for public terraform modules
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| dns_master | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
+No Modules.
 
 ## Resources
 
