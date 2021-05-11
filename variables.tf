@@ -122,11 +122,6 @@ variable "slave_allowed_cidr_blocks" {
   description = "List of CIDR blocks to be allowed to access the slave instances"
 }
 
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID to create the cluster in (e.g. `vpc-a22222ee`)"
-}
-
 variable "master_dns_name" {
   type        = string
   description = "Name of the cluster CNAME record to create in the parent DNS zone specified by `zone_id`. If left empty, the name will be auto-asigned using the format `emr-master-var.name`"
