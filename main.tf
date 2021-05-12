@@ -436,7 +436,7 @@ resource "aws_emr_cluster" "default" {
 # https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html
 resource "aws_emr_instance_group" "task" {
   count      = var.create_task_instance_group ? 1 : 0
-  name       = var.aws_emr_instance_group_name
+  name       = var.task_instance_group_name
   cluster_id = join("", aws_emr_cluster.default.*.id)
 
   instance_type  = var.task_instance_group_instance_type
@@ -459,10 +459,10 @@ resource "aws_emr_instance_group" "task" {
 # https://www.terraform.io/docs/providers/aws/r/vpc_endpoint.html
 # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-clusters-in-a-vpc.html
 resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
-  count           = var.subnet_type == "private" && var.create_vpc_endpoint_s3 ? 1 : 0
-  vpc_id          = var.security_group_vpc_id
-  service_name    = format("com.amazonaws.%s.s3", var.region)
-  auto_accept     = true
-  route_table_ids = [var.route_table_id]
-  tags            = merge(var.tags, local.tags)
+  count        = var.subnet_type == "private" && var.create_vpc_endpoint_s3 ? 1 : 0
+  vpc_id       = var.security_group_vpc_id
+  service_name = format("com.amazonaws.%s.s3", var.region)
+  auto_accept  = true
+  # route_table_ids = [var.route_table_id]
+  tags = merge(var.tags, local.tags)
 }
