@@ -22,8 +22,3 @@ output "cluster_slave_security_group_id" {
   value       = module.emr_cluster.slave_security_group_id
   description = "Slave security group ID"
 }
-
-output "cluster_master_host" {
-  value       = module.emr_cluster.master_host
-  description = "Name of the cluster CNAME record for the master nodes in the parent DNS zone"
-}

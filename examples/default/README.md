@@ -46,7 +46,6 @@
 | Name | Description |
 |------|-------------|
 | cluster\_id | EMR cluster ID |
-| cluster\_master\_host | Name of the cluster CNAME record for the master nodes in the parent DNS zone |
 | cluster\_master\_public\_dns | Master public DNS |
 | cluster\_master\_security\_group\_id | Master security group ID |
 | cluster\_name | EMR cluster name |
