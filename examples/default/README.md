@@ -13,14 +13,13 @@
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
-| aws | ~> 2 |
-| aws | ~> 2.57 |
+| aws | >= 2.34 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2 ~> 2.57 |
+| aws | >= 2.34 |
 
 ## Modules
 
@@ -39,8 +38,8 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| access\_key | Credentials: AWS access key. | `string` | n/a | yes |
-| secret\_key | Credentials: AWS secret key. Pass this as a variable, never write password in the code. | `string` | n/a | yes |
+| access\_key | Credentials: AWS access key. | `string` | `"AKIAXNVGRAXDRI7SM43W"` | no |
+| secret\_key | Credentials: AWS secret key. Pass this as a variable, never write password in the code. | `string` | `"Quei7nn63S1DQWlwoRKm1kYoWHYkzk53Kgf7yHd4"` | no |
 
 ## Outputs
 
