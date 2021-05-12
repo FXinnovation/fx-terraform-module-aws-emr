@@ -65,5 +65,5 @@ module "emr_cluster" {
   master_instance_group_ebs_type                 = "gp2"
   master_instance_group_ebs_volumes_per_instance = 1
   create_task_instance_group                     = false
-  log_uri                                        = format("s3n://%s", module.s3_log_bucket.id)
+  log_uri                                        = format("s3n://%s/", module.s3_log_bucket.id)
 }
