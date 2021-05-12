@@ -15,6 +15,12 @@ resource "random_string" "this" {
   special = false
 }
 
+module "s3_log_bucket" {
+  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=2.1.0"
+  name   = "emr-fx-test-log"
+
+}
+
 module "vpc" {
   source                   = "terraform-aws-modules/vpc/aws"
   version                  = "2.70.0"
@@ -59,5 +65,5 @@ module "emr_cluster" {
   master_instance_group_ebs_type                 = "gp2"
   master_instance_group_ebs_volumes_per_instance = 1
   create_task_instance_group                     = false
-  log_uri                                        = "s3://test"
+  log_uri                                        = format("s3://%s", module.s3_log_bucket.id)
 }
