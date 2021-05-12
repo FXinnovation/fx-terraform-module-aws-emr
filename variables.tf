@@ -173,6 +173,7 @@ variable "release_label" {
 variable "applications" {
   type        = list(string)
   description = "A list of applications for the cluster. Valid values are: Flink, Ganglia, Hadoop, HBase, HCatalog, Hive, Hue, JupyterHub, Livy, Mahout, MXNet, Oozie, Phoenix, Pig, Presto, Spark, Sqoop, TensorFlow, Tez, Zeppelin, and ZooKeeper (as of EMR 5.25.0). Case insensitive"
+  default     = ["Spark"]
 }
 
 # https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html

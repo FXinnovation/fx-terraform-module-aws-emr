@@ -23,11 +23,6 @@ variable "release_label" {
   description = "The release label for the Amazon EMR release. https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-release-5x.html"
 }
 
-variable "applications" {
-  type        = list(string)
-  description = "A list of applications for the cluster. Valid values are: Flink, Ganglia, Hadoop, HBase, HCatalog, Hive, Hue, JupyterHub, Livy, Mahout, MXNet, Oozie, Phoenix, Pig, Presto, Spark, Sqoop, TensorFlow, Tez, Zeppelin, and ZooKeeper (as of EMR 5.25.0). Case insensitive"
-}
-
 variable "configurations_json" {
   type        = string
   description = "A JSON string for supplying list of configurations for the EMR cluster"
@@ -89,15 +84,6 @@ variable "create_task_instance_group" {
   description = "Whether to create an instance group for Task nodes. For more info: https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html, https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html"
 }
 
-variable "ssh_public_key_path" {
-  type        = string
-  description = "Path to SSH public key directory (e.g. `/secrets`)"
-}
-
-variable "generate_ssh_key" {
-  type        = bool
-  description = "If set to `true`, new SSH key pair will be created"
-}
 
 variable "access_key" {
   description = "Credentials: AWS access key."

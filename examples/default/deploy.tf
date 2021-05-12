@@ -12,14 +12,13 @@ module "emr_cluster" {
 
   master_allowed_security_groups = []
   slave_allowed_security_groups  = []
-  region                         = var.region
   security_group_vpc_id          = data.aws_vpc.default.id
   subnet_id                      = tolist(data.aws_subnet_ids.default.ids)
   #   route_table_id                                 = data.aws_subnet_ids.default.ids.private_route_table_ids[0]
   subnet_type                                    = "private"
-  ebs_root_volume_size                           = var.ebs_root_volume_size
-  visible_to_all_users                           = var.visible_to_all_users
-  release_label                                  = var.release_label
+  ebs_root_volume_size                           = "10Gib"
+  visible_to_all_users                           = true
+  release_label                                  = "5.2.1"
   applications                                   = var.applications
   configurations_json                            = var.configurations_json
   core_instance_group_instance_type              = var.core_instance_group_instance_type
