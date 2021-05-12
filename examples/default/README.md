@@ -38,8 +38,8 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| access\_key | Credentials: AWS access key. | `string` | `"AKIAXNVGRAXDRI7SM43W"` | no |
-| secret\_key | Credentials: AWS secret key. Pass this as a variable, never write password in the code. | `string` | `"Quei7nn63S1DQWlwoRKm1kYoWHYkzk53Kgf7yHd4"` | no |
+| access\_key | Credentials: AWS access key. | `string` | n/a | yes |
+| secret\_key | Credentials: AWS secret key. Pass this as a variable, never write password in the code. | `string` | n/a | yes |
 
 ## Outputs
 
