@@ -16,8 +16,8 @@ module "vpc" {
   name                     = random_string.this.result
   cidr                     = "10.0.0.0/16"
   azs                      = ["ca-central-1a", "ca-central-1b", "ca-central-1d"]
-  private_subnets          = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets           = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  private_subnets          = ["10.0.1.0/24"]
+  public_subnets           = ["10.0.101.0/24"]
   enable_nat_gateway       = true
   enable_dns_hostnames     = true
   enable_dns_support       = true
@@ -25,6 +25,8 @@ module "vpc" {
   dhcp_options_domain_name = "ca-central-1.compute.internal"
 
 }
+
+
 
 module "emr_cluster" {
   source = "../../"
@@ -34,7 +36,7 @@ module "emr_cluster" {
   region                                         = "ca-central-1"
   security_group_vpc_id                          = module.vpc.vpc_id
   subnet_id                                      = tolist(module.vpc.private_subnets)[0]
-  route_table_id                                 = module.vpc.vpc_main_route_table_id
+  route_table_id                                 = tolist(module.vpc.private_route_table_ids)[0]
   subnet_type                                    = "private"
   ebs_root_volume_size                           = 10
   visible_to_all_users                           = true
