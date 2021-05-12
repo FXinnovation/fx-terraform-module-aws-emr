@@ -11,7 +11,7 @@ module "emr_cluster" {
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"
   security_group_vpc_id                          = data.aws_vpc.default.id
-  subnet_id                                      = data.aws_subnet_ids.default.ids[0]
+  subnet_id                                      = tolist(data.aws_subnet_ids.default.ids)[0]
   route_table_id                                 = data.aws_vpc.default.main_route_table_id
   subnet_type                                    = "private"
   ebs_root_volume_size                           = 10
