@@ -28,12 +28,12 @@ locals {
 resource "aws_security_group" "managed_master" {
   count                  = var.use_existing_managed_master_security_group == false ? 1 : 0
   revoke_rules_on_delete = true
-  vpc_id                 = var.security_group_vpc_id
+  vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_master_security_group_name)
-  description            = "EmrManagedMasterSecurityGroup"
+  description            = "${var.emr_cluster_name}-EmrManagedMasterSecurityGroup"
   tags = merge(
     var.tags,
-    var.security_group_tags,
+    var.security_group_master_tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_master_security_group_name)
     },
@@ -55,18 +55,18 @@ resource "aws_security_group_rule" "managed_master_egress" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = join("", aws_security_group.managed_master.*.id)
+  security_group_id = element(concat(aws_security_group.managed_master.*.id, [""]), 0)
 }
 
 resource "aws_security_group" "managed_slave" {
   count                  = var.use_existing_managed_slave_security_group == false ? 1 : 0
   revoke_rules_on_delete = true
-  vpc_id                 = var.security_group_vpc_id
+  vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_slave_security_group_name)
-  description            = "EmrManagedSlaveSecurityGroup"
+  description            = "${var.emr_cluster_name}-EmrManagedSlaveSecurityGroup"
   tags = merge(
     var.tags,
-    var.security_group_tags,
+    var.security_group_slave_tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_slave_security_group_name)
     },
@@ -88,18 +88,18 @@ resource "aws_security_group_rule" "managed_slave_egress" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = join("", aws_security_group.managed_slave.*.id)
+  security_group_id = element(concat(aws_security_group.managed_slave.*.id, [""]), 0)
 }
 
 resource "aws_security_group" "managed_service_access" {
   count                  = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
   revoke_rules_on_delete = true
-  vpc_id                 = var.security_group_vpc_id
+  vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.service_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.service_security_group_name)
-  description            = "EmrManagedServiceAccessSecurityGroup"
+  description            = "${var.emr_cluster_name}-EmrManagedServiceAccessSecurityGroup"
   tags = merge(
     var.tags,
-    var.security_group_tags,
+    var.security_group_managed_service_tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.service_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.service_security_group_name)
     },
@@ -119,8 +119,8 @@ resource "aws_security_group_rule" "managed_master_service_access_ingress" {
   from_port                = 9443
   to_port                  = 9443
   protocol                 = "tcp"
-  source_security_group_id = join("", aws_security_group.managed_master.*.id)
-  security_group_id        = join("", aws_security_group.managed_service_access.*.id)
+  source_security_group_id = element(concat(aws_security_group.managed_master.*.id, [""]), 0)
+  security_group_id        = element(concat(aws_security_group.managed_service_access.*.id, [""]), 0)
 }
 
 resource "aws_security_group_rule" "managed_service_access_egress" {
@@ -132,19 +132,19 @@ resource "aws_security_group_rule" "managed_service_access_egress" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = join("", aws_security_group.managed_service_access.*.id)
+  security_group_id = element(concat(aws_security_group.managed_service_access.*.id, [""]), 0)
 }
 
 # Specify additional master and slave security groups
 resource "aws_security_group" "master" {
   count                  = var.use_existing_additional_master_security_group == false ? 1 : 0
   revoke_rules_on_delete = true
-  vpc_id                 = var.security_group_vpc_id
+  vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.master_security_group_name)
   description            = "Allow inbound traffic from Security Groups and CIDRs for masters. Allow all outbound traffic"
   tags = merge(
     var.tags,
-    var.security_group_tags,
+    var.security_group_master_tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.master_security_group_name)
     },
@@ -160,7 +160,7 @@ resource "aws_security_group_rule" "master_ingress_security_groups" {
   to_port                  = 65535
   protocol                 = "tcp"
   source_security_group_id = var.master_allowed_security_groups[count.index]
-  security_group_id        = join("", aws_security_group.master.*.id)
+  security_group_id        = element(concat(aws_security_group.master.*.id, [""]), 0)
 }
 
 resource "aws_security_group_rule" "master_ingress_cidr_blocks" {
@@ -171,7 +171,7 @@ resource "aws_security_group_rule" "master_ingress_cidr_blocks" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = var.master_allowed_cidr_blocks
-  security_group_id = join("", aws_security_group.master.*.id)
+  security_group_id = element(concat(aws_security_group.master.*.id, [""]), 0)
 }
 
 resource "aws_security_group_rule" "master_egress" {
@@ -182,18 +182,18 @@ resource "aws_security_group_rule" "master_egress" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.master.*.id)
+  security_group_id = element(concat(aws_security_group.master.*.id, [""]), 0)
 }
 
 resource "aws_security_group" "slave" {
   count                  = var.use_existing_additional_slave_security_group == false ? 1 : 0
   revoke_rules_on_delete = true
-  vpc_id                 = var.security_group_vpc_id
+  vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.slave_security_group_name)
   description            = "Allow inbound traffic from Security Groups and CIDRs for slaves. Allow all outbound traffic"
   tags = merge(
     var.tags,
-    var.security_group_tags,
+    var.security_group_slave_tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.slave_security_group_name)
     },
@@ -209,7 +209,7 @@ resource "aws_security_group_rule" "slave_ingress_security_groups" {
   to_port                  = 65535
   protocol                 = "tcp"
   source_security_group_id = var.slave_allowed_security_groups[count.index]
-  security_group_id        = join("", aws_security_group.slave.*.id)
+  security_group_id        = element(concat(aws_security_group.slave.*.id, [""]), 0)
 }
 
 resource "aws_security_group_rule" "slave_ingress_cidr_blocks" {
@@ -220,7 +220,7 @@ resource "aws_security_group_rule" "slave_ingress_cidr_blocks" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = var.slave_allowed_cidr_blocks
-  security_group_id = join("", aws_security_group.slave.*.id)
+  security_group_id = element(concat(aws_security_group.slave.*.id, [""]), 0)
 }
 
 resource "aws_security_group_rule" "slave_egress" {
@@ -231,7 +231,7 @@ resource "aws_security_group_rule" "slave_egress" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.slave.*.id)
+  security_group_id = element(concat(aws_security_group.slave.*.id, [""]), 0)
 }
 
 /*
@@ -460,7 +460,7 @@ resource "aws_emr_instance_group" "task" {
 # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-clusters-in-a-vpc.html
 resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
   count           = var.subnet_type == "private" && var.create_vpc_endpoint_s3 ? 1 : 0
-  vpc_id          = var.security_group_vpc_id
+  vpc_id          = var.vpc_id
   service_name    = format("com.amazonaws.%s.s3", var.region)
   auto_accept     = true
   route_table_ids = [var.route_table_id]

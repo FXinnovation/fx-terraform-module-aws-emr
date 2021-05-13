@@ -64,14 +64,11 @@ variable "slave_security_group_name" {
   description = "The name of the  managed security group that will be used for EMR master node. "
 }
 
-
 variable "service_security_group_name" {
   type        = string
   default     = "service-emr-sg"
   description = "The name of the  managed security group that will be used for EMR master node. "
 }
-
-
 
 variable "managed_slave_security_group" {
   type        = string
@@ -96,7 +93,6 @@ variable "service_access_security_group" {
   default     = ""
   description = "The name of the existing additional security group that will be used for EMR core & task nodes. If empty, a new security group will be created"
 }
-
 
 variable "master_allowed_security_groups" {
   type        = list(string)
@@ -236,7 +232,7 @@ variable "core_instance_group_ebs_size" {
 variable "core_instance_group_ebs_type" {
   type        = string
   description = "Core instances volume type. Valid options are `gp2`, `io1`, `standard` and `st1`"
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "core_instance_group_ebs_iops" {
@@ -282,7 +278,7 @@ variable "master_instance_group_ebs_size" {
 variable "master_instance_group_ebs_type" {
   type        = string
   description = "Master instances volume type. Valid options are `gp2`, `io1`, `standard` and `st1`"
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "master_instance_group_ebs_iops" {
@@ -354,7 +350,7 @@ variable "task_instance_group_ebs_optimized" {
 variable "task_instance_group_ebs_type" {
   type        = string
   description = "Task instances volume type. Valid options are `gp2`, `io1`, `standard` and `st1`"
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "task_instance_group_ebs_iops" {
@@ -498,6 +494,24 @@ variable "tags" {
 
 variable "security_group_tags" {
   description = "Tags to be merged to the security group"
+  type        = map(string)
+  default     = {}
+}
+
+variable "security_group_master_tags" {
+  description = "Tags to be merged to the master security group"
+  type        = map(string)
+  default     = {}
+}
+
+variable "security_group_slave_tags" {
+  description = "Tags to be merged to the slave security group"
+  type        = map(string)
+  default     = {}
+}
+
+variable "security_group_managed_service_tags" {
+  description = "Tags to be merged to the managed slave security group"
   type        = map(string)
   default     = {}
 }

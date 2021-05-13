@@ -18,7 +18,6 @@ resource "random_string" "this" {
 module "s3_log_bucket" {
   source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=2.1.0"
   name   = "emr-fx-test-log"
-
 }
 
 module "vpc" {
@@ -34,10 +33,7 @@ module "vpc" {
   enable_dns_support       = true
   enable_dhcp_options      = true
   dhcp_options_domain_name = "ca-central-1.compute.internal"
-
 }
-
-
 
 module "emr_cluster" {
   source = "../../"
@@ -45,7 +41,7 @@ module "emr_cluster" {
   master_allowed_security_groups                 = []
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"
-  security_group_vpc_id                          = module.vpc.vpc_id
+  vpc_id                                         = module.vpc.vpc_id
   subnet_id                                      = tolist(module.vpc.private_subnets)[0]
   route_table_id                                 = tolist(module.vpc.private_route_table_ids)[0]
   subnet_type                                    = "private"
@@ -57,12 +53,12 @@ module "emr_cluster" {
   core_instance_group_instance_type              = "m5.xlarge"
   core_instance_group_instance_count             = 1
   core_instance_group_ebs_size                   = 10
-  core_instance_group_ebs_type                   = "gp2"
+  core_instance_group_ebs_type                   = "gp3"
   core_instance_group_ebs_volumes_per_instance   = 1
   master_instance_group_instance_type            = "m5.xlarge"
   master_instance_group_instance_count           = 1
   master_instance_group_ebs_size                 = 10
-  master_instance_group_ebs_type                 = "gp2"
+  master_instance_group_ebs_type                 = "gp3"
   master_instance_group_ebs_volumes_per_instance = 1
   create_task_instance_group                     = false
   log_uri                                        = format("s3n://%s/", module.s3_log_bucket.id)
