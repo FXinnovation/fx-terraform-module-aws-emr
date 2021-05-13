@@ -53,12 +53,12 @@ module "emr_cluster" {
   core_instance_group_instance_type              = "m5.xlarge"
   core_instance_group_instance_count             = 1
   core_instance_group_ebs_size                   = 10
-  core_instance_group_ebs_type                   = "gp3"
+  core_instance_group_ebs_type                   = "gp2"
   core_instance_group_ebs_volumes_per_instance   = 1
   master_instance_group_instance_type            = "m5.xlarge"
   master_instance_group_instance_count           = 1
   master_instance_group_ebs_size                 = 10
-  master_instance_group_ebs_type                 = "gp3"
+  master_instance_group_ebs_type                 = "gp2"
   master_instance_group_ebs_volumes_per_instance = 1
   create_task_instance_group                     = false
   log_uri                                        = format("s3n://%s/", module.s3_log_bucket.id)
