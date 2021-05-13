@@ -463,7 +463,7 @@ variable "emr_autoscaling_role_name" {
 }
 
 
-variable "security_group_vpc_id" {
+variable "vpc_id" {
   description = "ID of the VPC"
   type        = string
   default     = null

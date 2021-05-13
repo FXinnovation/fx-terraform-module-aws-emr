@@ -97,7 +97,6 @@ No Modules.
 | security\_group\_master\_tags | Tags to be merged to the master security group | `map(string)` | `{}` | no |
 | security\_group\_slave\_tags | Tags to be merged to the slave security group | `map(string)` | `{}` | no |
 | security\_group\_tags | Tags to be merged to the security group | `map(string)` | `{}` | no |
-| security\_group\_vpc\_id | ID of the VPC | `string` | `null` | no |
 | service\_access\_security\_group | The name of the existing additional security group that will be used for EMR core & task nodes. If empty, a new security group will be created | `string` | `""` | no |
 | service\_security\_group\_name | The name of the  managed security group that will be used for EMR master node. | `string` | `"service-emr-sg"` | no |
 | slave\_allowed\_cidr\_blocks | List of CIDR blocks to be allowed to access the slave instances | `list(string)` | `[]` | no |
@@ -126,6 +125,7 @@ No Modules.
 | use\_existing\_service\_access\_security\_group | If set to `true`, will use variable `service_access_security_group` using an existing security group that was created outside of this module | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to all resources. | `bool` | `true` | no |
 | visible\_to\_all\_users | Whether the job flow is visible to all IAM users of the AWS account associated with the job flow | `bool` | `true` | no |
+| vpc\_id | ID of the VPC | `string` | `null` | no |
 | zone\_id | Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the masters and slaves | `string` | `null` | no |
 
 ## Outputs
