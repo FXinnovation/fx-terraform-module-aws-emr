@@ -255,14 +255,13 @@ data "aws_iam_policy_document" "assume_role_emr" {
 
 resource "aws_iam_role" "emr" {
   name               = var.emr_role_name
-  assume_role_policy = join("", data.aws_iam_policy_document.assume_role_emr.*.json)
-
-  tags = merge(var.tags, local.tags)
+  assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
+  tags               = merge(var.tags, local.tags)
 }
 
 # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 resource "aws_iam_role_policy_attachment" "emr" {
-  role       = join("", aws_iam_role.emr.*.name)
+  role       = element(concat(aws_iam_role.emr.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
 }
 
@@ -289,20 +288,19 @@ data "aws_iam_policy_document" "assume_role_ec2" {
 
 resource "aws_iam_role" "ec2" {
   name               = var.emr_ec2_role_name
-  assume_role_policy = join("", data.aws_iam_policy_document.assume_role_ec2.*.json)
-
-  tags = merge(var.tags, local.tags)
+  assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_ec2.*.json, [""]), 0)
+  tags               = merge(var.tags, local.tags)
 }
 
 # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 resource "aws_iam_role_policy_attachment" "ec2" {
-  role       = join("", aws_iam_role.ec2.*.name)
+  role       = element(concat(aws_iam_role.ec2.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
 }
 
 resource "aws_iam_instance_profile" "ec2" {
-  name = join("", aws_iam_role.ec2.*.name)
-  role = join("", aws_iam_role.ec2.*.name)
+  name = element(concat(aws_iam_role.ec2.*.name, [""]), 0)
+  role = element(concat(aws_iam_role.ec2.*.name, [""]), 0)
 }
 
 /*
@@ -312,14 +310,13 @@ https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 */
 resource "aws_iam_role" "ec2_autoscaling" {
   name               = var.emr_autoscaling_role_name
-  assume_role_policy = join("", data.aws_iam_policy_document.assume_role_emr.*.json)
-
-  tags = merge(var.tags, local.tags)
+  assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
+  tags               = merge(var.tags, local.tags)
 }
 
 # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 resource "aws_iam_role_policy_attachment" "ec2_autoscaling" {
-  role       = join("", aws_iam_role.ec2_autoscaling.*.name)
+  role       = element(concat(aws_iam_role.ec2_autoscaling.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforAutoScalingRole"
 }
 
@@ -331,12 +328,12 @@ resource "aws_emr_cluster" "default" {
   ec2_attributes {
     key_name                          = var.key_name
     subnet_id                         = var.subnet_id
-    emr_managed_master_security_group = var.use_existing_managed_master_security_group == false ? join("", aws_security_group.managed_master.*.id) : var.managed_master_security_group
-    emr_managed_slave_security_group  = var.use_existing_managed_slave_security_group == false ? join("", aws_security_group.managed_slave.*.id) : var.managed_slave_security_group
-    service_access_security_group     = var.use_existing_service_access_security_group == false && var.subnet_type == "private" ? join("", aws_security_group.managed_service_access.*.id) : var.service_access_security_group
-    instance_profile                  = join("", aws_iam_instance_profile.ec2.*.arn)
-    additional_master_security_groups = var.use_existing_additional_master_security_group == false ? join("", aws_security_group.master.*.id) : var.additional_master_security_group
-    additional_slave_security_groups  = var.use_existing_additional_slave_security_group == false ? join("", aws_security_group.slave.*.id) : var.additional_slave_security_group
+    emr_managed_master_security_group = var.use_existing_managed_master_security_group == false ? element(concat(aws_security_group.managed_master.*.id, [""]), 0) : var.managed_master_security_group
+    emr_managed_slave_security_group  = var.use_existing_managed_slave_security_group == false ? element(concat(aws_security_group.managed_slave.*.id, [""], 0)) : var.managed_slave_security_group
+    service_access_security_group     = var.use_existing_service_access_security_group == false && var.subnet_type == "private" ? element(concat(aws_security_group.managed_service_access.*.id, [""]), 0) : var.service_access_security_group
+    instance_profile                  = element(concat(aws_iam_instance_profile.ec2.*.arn, [""], 0))
+    additional_master_security_groups = var.use_existing_additional_master_security_group == false ? element(concat(aws_security_group.master.*.id, [""], 0)) : var.additional_master_security_group
+    additional_slave_security_groups  = var.use_existing_additional_slave_security_group == false ? element(concat(aws_security_group.slave.*.id, [""], 0)) : var.additional_slave_security_group
   }
 
   termination_protection            = var.termination_protection
@@ -422,7 +419,7 @@ resource "aws_emr_cluster" "default" {
   log_uri = var.log_uri
 
   service_role     = join("", aws_iam_role.emr.*.arn)
-  autoscaling_role = join("", aws_iam_role.ec2_autoscaling.*.arn)
+  autoscaling_role = element(concat(aws_iam_role.ec2_autoscaling.*.arn, [""]), 0)
 
   tags = merge(var.tags, local.tags)
 
@@ -437,7 +434,7 @@ resource "aws_emr_cluster" "default" {
 resource "aws_emr_instance_group" "task" {
   count      = var.create_task_instance_group ? 1 : 0
   name       = var.task_instance_group_name
-  cluster_id = join("", aws_emr_cluster.default.*.id)
+  cluster_id = element(concat(aws_emr_cluster.default.*.id, [""], 0))
 
   instance_type  = var.task_instance_group_instance_type
   instance_count = var.task_instance_group_instance_count
