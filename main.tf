@@ -329,11 +329,11 @@ resource "aws_emr_cluster" "default" {
     key_name                          = var.key_name
     subnet_id                         = var.subnet_id
     emr_managed_master_security_group = var.use_existing_managed_master_security_group == false ? element(concat(aws_security_group.managed_master.*.id, [""]), 0) : var.managed_master_security_group
-    emr_managed_slave_security_group  = var.use_existing_managed_slave_security_group == false ? element(concat(aws_security_group.managed_slave.*.id, [""], 0)) : var.managed_slave_security_group
+    emr_managed_slave_security_group  = var.use_existing_managed_slave_security_group == false ? element(concat(aws_security_group.managed_slave.*.id, [""]), 0) : var.managed_slave_security_group
     service_access_security_group     = var.use_existing_service_access_security_group == false && var.subnet_type == "private" ? element(concat(aws_security_group.managed_service_access.*.id, [""]), 0) : var.service_access_security_group
     instance_profile                  = element(concat(aws_iam_instance_profile.ec2.*.arn, [""]), 0)
-    additional_master_security_groups = var.use_existing_additional_master_security_group == false ? element(concat(aws_security_group.master.*.id, [""], 0)) : var.additional_master_security_group
-    additional_slave_security_groups  = var.use_existing_additional_slave_security_group == false ? element(concat(aws_security_group.slave.*.id, [""], 0)) : var.additional_slave_security_group
+    additional_master_security_groups = var.use_existing_additional_master_security_group == false ? element(concat(aws_security_group.master.*.id, [""]), 0) : var.additional_master_security_group
+    additional_slave_security_groups  = var.use_existing_additional_slave_security_group == false ? element(concat(aws_security_group.slave.*.id, [""]), 0) : var.additional_slave_security_group
   }
 
   termination_protection            = var.termination_protection
@@ -434,7 +434,7 @@ resource "aws_emr_cluster" "default" {
 resource "aws_emr_instance_group" "task" {
   count      = var.create_task_instance_group ? 1 : 0
   name       = var.task_instance_group_name
-  cluster_id = element(concat(aws_emr_cluster.default.*.id, [""], 0))
+  cluster_id = element(concat(aws_emr_cluster.default.*.id, [""]), 0)
 
   instance_type  = var.task_instance_group_instance_type
   instance_count = var.task_instance_group_instance_count
