@@ -51,7 +51,7 @@ module "emr_cluster" {
   applications                                   = ["spark"]
   configurations_json                            = ""
   core_instance_group_instance_type              = "m5.xlarge"
-  core_instance_group_instance_count             = 1
+  core_instance_group_instance_count             = 2
   core_instance_group_ebs_size                   = 10
   core_instance_group_ebs_type                   = "gp2"
   core_instance_group_ebs_volumes_per_instance   = 1
