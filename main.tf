@@ -234,11 +234,6 @@ resource "aws_security_group_rule" "slave_egress" {
   security_group_id = element(concat(aws_security_group.slave.*.id, [""]), 0)
 }
 
-/*
-Allows Amazon EMR to call other AWS services on your behalf when provisioning resources and performing service-level actions.
-This role is required for all clusters.
-https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
-*/
 data "aws_iam_policy_document" "assume_role_emr" {
 
   statement {
