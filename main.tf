@@ -130,7 +130,8 @@ resource "aws_security_group_rule" "managed_master_service_access_9443_ingress" 
 }
 
 resource "aws_security_group_rule" "managed_service_access_any_egress" {
-  count             = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
+  count = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
+
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -261,14 +262,20 @@ data "aws_iam_policy_document" "assume_role_emr" {
   }
 }
 
-resource "aws_iam_role" "emr" {
-  name               = var.emr_role_name
+resource "aws_iam_role" "this" {
+  name               = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
-  tags               = merge(var.tags, local.tags)
+  tags = merge(
+    var.tags,
+    local.tags,
+    {
+      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_role_name)
+    }
+  )
 }
 
-resource "aws_iam_role_policy_attachment" "emr" {
-  role       = element(concat(aws_iam_role.emr.*.name, [""]), 0)
+resource "aws_iam_role_policy_attachment" "this" {
+  role       = element(concat(aws_iam_role.this.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
 }
 
@@ -287,9 +294,15 @@ data "aws_iam_policy_document" "assume_role_ec2" {
 }
 
 resource "aws_iam_role" "ec2" {
-  name               = var.emr_ec2_role_name
+  name               = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_ec2_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_ec2.*.json, [""]), 0)
-  tags               = merge(var.tags, local.tags)
+  tags = merge(
+    var.tags,
+    local.tags,
+    {
+      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_ec2_role_name)
+    }
+  )
 }
 
 resource "aws_iam_role_policy_attachment" "ec2" {
@@ -303,9 +316,15 @@ resource "aws_iam_instance_profile" "ec2" {
 }
 
 resource "aws_iam_role" "ec2_autoscaling" {
-  name               = var.emr_autoscaling_role_name
+  name               = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
-  tags               = merge(var.tags, local.tags)
+  tags = merge(
+    var.tags,
+    local.tags,
+    {
+      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
+    }
+  )
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_autoscaling" {
@@ -314,7 +333,7 @@ resource "aws_iam_role_policy_attachment" "ec2_autoscaling" {
 }
 
 resource "aws_emr_cluster" "default" {
-  name          = var.emr_cluster_name
+  name          = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name, count.index + 1) : format("%s%s", var.prefix, var.emr_cluster_name)
   release_label = var.release_label
 
   ec2_attributes {
@@ -410,10 +429,16 @@ resource "aws_emr_cluster" "default" {
 
   log_uri = var.log_uri
 
-  service_role     = join("", aws_iam_role.emr.*.arn)
+  service_role     = join("", aws_iam_role.this.*.arn)
   autoscaling_role = element(concat(aws_iam_role.ec2_autoscaling.*.arn, [""]), 0)
 
-  tags = merge(var.tags, local.tags)
+  tags = merge(
+    var.tags,
+    local.tags,
+    {
+      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name, count.index + 1) : format("%s%s", var.prefix, var.emr_cluster_name)
+    }
+  )
 
   # configurations_json changes are ignored because of terraform bug. Configuration changes are applied via local.bootstrap_action.
   lifecycle {
@@ -421,11 +446,10 @@ resource "aws_emr_cluster" "default" {
   }
 }
 
-# https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html
-# https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html
 resource "aws_emr_instance_group" "task" {
-  count      = var.create_task_instance_group ? 1 : 0
-  name       = var.task_instance_group_name
+  count = var.create_task_instance_group ? 1 : 0
+
+  name       = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.task_instance_group_name, count.index + 1) : format("%s%s", var.prefix, var.task_instance_group_name)
   cluster_id = element(concat(aws_emr_cluster.default.*.id, [""]), 0)
 
   instance_type  = var.task_instance_group_instance_type
@@ -443,12 +467,9 @@ resource "aws_emr_instance_group" "task" {
   autoscaling_policy = var.task_instance_group_autoscaling_policy
 }
 
-
-
-# https://www.terraform.io/docs/providers/aws/r/vpc_endpoint.html
-# https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-clusters-in-a-vpc.html
 resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
-  count           = var.subnet_type == "private" && var.create_vpc_endpoint_s3 ? 1 : 0
+  count = var.subnet_type == "private" && var.create_vpc_endpoint_s3 ? 1 : 0
+
   vpc_id          = var.vpc_id
   service_name    = format("com.amazonaws.%s.s3", var.region)
   auto_accept     = true
