@@ -334,7 +334,7 @@ resource "aws_iam_role_policy_attachment" "ec2_autoscaling" {
 }
 
 resource "aws_emr_cluster" "default" {
-  name          = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name) : format("%s%s", var.prefix, var.emr_cluster_name)
+  name          = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name) : format("%s%s", var.prefix, var.emr_cluster_name)
   release_label = var.release_label
 
   ec2_attributes {
@@ -438,7 +438,7 @@ resource "aws_emr_cluster" "default" {
     var.emr_cluster_tags,
     local.tags,
     {
-      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name) : format("%s%s", var.prefix, var.emr_cluster_name)
+      Name = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name) : format("%s%s", var.prefix, var.emr_cluster_name)
     }
   )
 
