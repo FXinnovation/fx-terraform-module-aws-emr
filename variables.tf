@@ -509,6 +509,12 @@ variable "security_group_managed_service_tags" {
   default     = {}
 }
 
+variable "emr_cluster_tags" {
+  description = "Tags to be merged to the emr  master cluster"
+  type        = map(string)
+  default     = {}
+}
+
 variable "emr_cluster_name" {
   description = "name of the emr cluster"
   type        = string

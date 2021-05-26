@@ -59,6 +59,7 @@ No Modules.
 | ebs\_root\_volume\_size | Size in GiB of the EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later | `number` | `10` | no |
 | emr\_autoscaling\_role\_name | The name of the iam role assigned to emr | `string` | `"emr_autoscaling_role"` | no |
 | emr\_cluster\_name | name of the emr cluster | `string` | `"emr"` | no |
+| emr\_cluster\_tags | Tags to be merged to the emr  master cluster | `map(string)` | `{}` | no |
 | emr\_ec2\_role\_name | The name of the iam role assigned to emr | `string` | `"emr_ec2_role"` | no |
 | emr\_role\_name | The name of the iam role assigned to emr | `string` | `"emr_master_role"` | no |
 | keep\_job\_flow\_alive\_when\_no\_steps | Switch on/off run cluster with no steps or when all steps are complete | `bool` | `true` | no |

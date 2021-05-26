@@ -429,11 +429,12 @@ resource "aws_emr_cluster" "default" {
 
   log_uri = var.log_uri
 
-  service_role     = join("", aws_iam_role.this.*.arn)
+  service_role     = element(concat(aws_iam_role.this.*.arn, [""]), 0)
   autoscaling_role = element(concat(aws_iam_role.ec2_autoscaling.*.arn, [""]), 0)
 
   tags = merge(
     var.tags,
+    var.emr_cluster_tags,
     local.tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name, count.index + 1) : format("%s%s", var.prefix, var.emr_cluster_name)
