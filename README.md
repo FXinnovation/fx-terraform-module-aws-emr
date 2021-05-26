@@ -104,7 +104,7 @@ No Modules.
 | slave\_security\_group\_name | The name of the  managed security group that will be used for EMR master node. | `string` | `"emr-slave-sg"` | no |
 | step\_concurrency\_level | The number of steps that can be executed concurrently. You can specify a maximum of 256 steps. Only valid for EMR clusters with release\_label 5.28.0 or greater. | `number` | `null` | no |
 | steps | List of steps to run when creating the cluster. | <pre>list(object({<br>    name              = string<br>    action_on_failure = string<br>    hadoop_jar_step = object({<br>      args       = list(string)<br>      jar        = string<br>      main_class = string<br>      properties = map(string)<br>    })<br>  }))</pre> | `[]` | no |
-| subnet\_id | VPC subnet ID where you want the job flow to launch. Cannot specify the `cc1.4xlarge` instance type for nodes of a job flow launched in a Amazon VPC | `string` | n/a | yes |
+| subnet\_ids | VPC subnet ID where you want the job flow to launch. Cannot specify the `cc1.4xlarge` instance type for nodes of a job flow launched in a Amazon VPC | `list(string)` | n/a | yes |
 | subnet\_type | Type of VPC subnet ID where you want the job flow to launch. Supported values are `private` or `public` | `string` | `"private"` | no |
 | tags | Tags to be merged with all resources of this module. | `map(string)` | `{}` | no |
 | task\_instance\_group\_autoscaling\_policy | String containing the EMR Auto Scaling Policy JSON for the Task instance group | `string` | `null` | no |

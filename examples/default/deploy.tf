@@ -42,7 +42,7 @@ module "emr_cluster" {
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"
   vpc_id                                         = module.vpc.vpc_id
-  subnet_id                                      = tolist(module.vpc.private_subnets)[0]
+  subnet_ids                                     = tolist(module.vpc.private_subnets)
   route_table_id                                 = tolist(module.vpc.private_route_table_ids)[0]
   subnet_type                                    = "private"
   ebs_root_volume_size                           = 10
