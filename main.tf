@@ -26,7 +26,8 @@ locals {
 ######
 
 resource "aws_security_group" "managed_master" {
-  count                  = var.use_existing_managed_master_security_group == false ? 1 : 0
+  count = var.use_existing_managed_master_security_group == false ? 1 : 0
+
   revoke_rules_on_delete = true
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_master_security_group_name)
@@ -263,13 +264,13 @@ data "aws_iam_policy_document" "assume_role_emr" {
 }
 
 resource "aws_iam_role" "this" {
-  name               = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_role_name)
+  name               = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_role_name) : format("%s%s", var.prefix, var.emr_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
   tags = merge(
     var.tags,
     local.tags,
     {
-      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_role_name)
+      Name = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_role_name) : format("%s%s", var.prefix, var.emr_role_name)
     }
   )
 }
@@ -294,13 +295,13 @@ data "aws_iam_policy_document" "assume_role_ec2" {
 }
 
 resource "aws_iam_role" "ec2" {
-  name               = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_ec2_role_name)
+  name               = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name) : format("%s%s", var.prefix, var.emr_ec2_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_ec2.*.json, [""]), 0)
   tags = merge(
     var.tags,
     local.tags,
     {
-      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_ec2_role_name)
+      Name = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name) : format("%s%s", var.prefix, var.emr_ec2_role_name)
     }
   )
 }
@@ -316,13 +317,13 @@ resource "aws_iam_instance_profile" "ec2" {
 }
 
 resource "aws_iam_role" "ec2_autoscaling" {
-  name               = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
+  name               = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
   tags = merge(
     var.tags,
     local.tags,
     {
-      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name, count.index + 1) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
+      Name = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
     }
   )
 }
@@ -333,7 +334,7 @@ resource "aws_iam_role_policy_attachment" "ec2_autoscaling" {
 }
 
 resource "aws_emr_cluster" "default" {
-  name          = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name, count.index + 1) : format("%s%s", var.prefix, var.emr_cluster_name)
+  name          = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name) : format("%s%s", var.prefix, var.emr_cluster_name)
   release_label = var.release_label
 
   ec2_attributes {
@@ -437,7 +438,7 @@ resource "aws_emr_cluster" "default" {
     var.emr_cluster_tags,
     local.tags,
     {
-      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name, count.index + 1) : format("%s%s", var.prefix, var.emr_cluster_name)
+      Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.emr_cluster_name) : format("%s%s", var.prefix, var.emr_cluster_name)
     }
   )
 
