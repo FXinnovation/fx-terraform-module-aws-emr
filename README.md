@@ -126,7 +126,6 @@ No Modules.
 | use\_num\_suffix | Always append numerical suffix to all resources. | `bool` | `true` | no |
 | visible\_to\_all\_users | Whether the job flow is visible to all IAM users of the AWS account associated with the job flow | `bool` | `true` | no |
 | vpc\_id | ID of the VPC | `string` | `null` | no |
-| zone\_id | Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the masters and slaves | `string` | `null` | no |
 
 ## Outputs
 

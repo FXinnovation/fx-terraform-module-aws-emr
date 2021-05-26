@@ -46,8 +46,9 @@ resource "aws_security_group" "managed_master" {
   }
 }
 
-resource "aws_security_group_rule" "managed_master_egress" {
-  count             = var.use_existing_managed_master_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "managed_master_any_egress" {
+  count = var.use_existing_managed_master_security_group == false ? 1 : 0
+
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -59,7 +60,8 @@ resource "aws_security_group_rule" "managed_master_egress" {
 }
 
 resource "aws_security_group" "managed_slave" {
-  count                  = var.use_existing_managed_slave_security_group == false ? 1 : 0
+  count = var.use_existing_managed_slave_security_group == false ? 1 : 0
+
   revoke_rules_on_delete = true
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_slave_security_group_name)
@@ -79,8 +81,9 @@ resource "aws_security_group" "managed_slave" {
   }
 }
 
-resource "aws_security_group_rule" "managed_slave_egress" {
-  count             = var.use_existing_managed_slave_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "managed_slave_any_egress" {
+  count = var.use_existing_managed_slave_security_group == false ? 1 : 0
+
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -92,11 +95,13 @@ resource "aws_security_group_rule" "managed_slave_egress" {
 }
 
 resource "aws_security_group" "managed_service_access" {
-  count                  = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
+  count = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
+
   revoke_rules_on_delete = true
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.service_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.service_security_group_name)
   description            = "${var.emr_cluster_name}-EmrManagedServiceAccessSecurityGroup"
+
   tags = merge(
     var.tags,
     var.security_group_managed_service_tags,
@@ -112,8 +117,9 @@ resource "aws_security_group" "managed_service_access" {
   }
 }
 
-resource "aws_security_group_rule" "managed_master_service_access_ingress" {
-  count                    = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "managed_master_service_access_9443_ingress" {
+  count = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
+
   description              = "Allow ingress traffic from EmrManagedMasterSecurityGroup"
   type                     = "ingress"
   from_port                = 9443
@@ -123,7 +129,7 @@ resource "aws_security_group_rule" "managed_master_service_access_ingress" {
   security_group_id        = element(concat(aws_security_group.managed_service_access.*.id, [""]), 0)
 }
 
-resource "aws_security_group_rule" "managed_service_access_egress" {
+resource "aws_security_group_rule" "managed_service_access_any_egress" {
   count             = var.subnet_type == "private" && var.use_existing_service_access_security_group == false ? 1 : 0
   description       = "Allow all egress traffic"
   type              = "egress"
@@ -135,9 +141,9 @@ resource "aws_security_group_rule" "managed_service_access_egress" {
   security_group_id = element(concat(aws_security_group.managed_service_access.*.id, [""]), 0)
 }
 
-# Specify additional master and slave security groups
 resource "aws_security_group" "master" {
-  count                  = var.use_existing_additional_master_security_group == false ? 1 : 0
+  count = var.use_existing_additional_master_security_group == false ? 1 : 0
+
   revoke_rules_on_delete = true
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.master_security_group_name)
@@ -152,8 +158,9 @@ resource "aws_security_group" "master" {
   )
 }
 
-resource "aws_security_group_rule" "master_ingress_security_groups" {
-  count                    = var.use_existing_additional_master_security_group == false ? length(var.master_allowed_security_groups) : 0
+resource "aws_security_group_rule" "master_security_groups_any_ingress" {
+  count = var.use_existing_additional_master_security_group == false ? length(var.master_allowed_security_groups) : 0
+
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
@@ -163,8 +170,9 @@ resource "aws_security_group_rule" "master_ingress_security_groups" {
   security_group_id        = element(concat(aws_security_group.master.*.id, [""]), 0)
 }
 
-resource "aws_security_group_rule" "master_ingress_cidr_blocks" {
-  count             = length(var.master_allowed_cidr_blocks) > 0 && var.use_existing_additional_master_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "master_security_groups_cidrs_any_ingress" {
+  count = length(var.master_allowed_cidr_blocks) > 0 && var.use_existing_additional_master_security_group == false ? 1 : 0
+
   description       = "Allow inbound traffic from CIDR blocks"
   type              = "ingress"
   from_port         = 0
@@ -174,8 +182,9 @@ resource "aws_security_group_rule" "master_ingress_cidr_blocks" {
   security_group_id = element(concat(aws_security_group.master.*.id, [""]), 0)
 }
 
-resource "aws_security_group_rule" "master_egress" {
-  count             = var.use_existing_additional_master_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "master_security_groups_65535_egress" {
+  count = var.use_existing_additional_master_security_group == false ? 1 : 0
+
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -186,7 +195,8 @@ resource "aws_security_group_rule" "master_egress" {
 }
 
 resource "aws_security_group" "slave" {
-  count                  = var.use_existing_additional_slave_security_group == false ? 1 : 0
+  count = var.use_existing_additional_slave_security_group == false ? 1 : 0
+
   revoke_rules_on_delete = true
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.slave_security_group_name)
@@ -201,8 +211,9 @@ resource "aws_security_group" "slave" {
   )
 }
 
-resource "aws_security_group_rule" "slave_ingress_security_groups" {
-  count                    = var.use_existing_additional_slave_security_group == false ? length(var.slave_allowed_security_groups) : 0
+resource "aws_security_group_rule" "slave_security_groups_65535_ingress" {
+  count = var.use_existing_additional_slave_security_group == false ? length(var.slave_allowed_security_groups) : 0
+
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
@@ -212,8 +223,9 @@ resource "aws_security_group_rule" "slave_ingress_security_groups" {
   security_group_id        = element(concat(aws_security_group.slave.*.id, [""]), 0)
 }
 
-resource "aws_security_group_rule" "slave_ingress_cidr_blocks" {
-  count             = length(var.slave_allowed_cidr_blocks) > 0 && var.use_existing_additional_slave_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "slave_security_groups_cidrs_65535_ingress" {
+  count = length(var.slave_allowed_cidr_blocks) > 0 && var.use_existing_additional_slave_security_group == false ? 1 : 0
+
   description       = "Allow inbound traffic from CIDR blocks"
   type              = "ingress"
   from_port         = 0
@@ -223,8 +235,9 @@ resource "aws_security_group_rule" "slave_ingress_cidr_blocks" {
   security_group_id = element(concat(aws_security_group.slave.*.id, [""]), 0)
 }
 
-resource "aws_security_group_rule" "slave_egress" {
-  count             = var.use_existing_additional_slave_security_group == false ? 1 : 0
+resource "aws_security_group_rule" "slave_security_groups_65535_egress" {
+  count = var.use_existing_additional_slave_security_group == false ? 1 : 0
+
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -254,19 +267,11 @@ resource "aws_iam_role" "emr" {
   tags               = merge(var.tags, local.tags)
 }
 
-# https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 resource "aws_iam_role_policy_attachment" "emr" {
   role       = element(concat(aws_iam_role.emr.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
 }
 
-/*
-Application processes that run on top of the Hadoop ecosystem on cluster instances use this role when they call other AWS services.
-For accessing data in Amazon S3 using EMRFS, you can specify different roles to be assumed based on the user or group making the request,
-or on the location of data in Amazon S3.
-This role is required for all clusters.
-https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
-*/
 data "aws_iam_policy_document" "assume_role_ec2" {
 
   statement {
@@ -287,7 +292,6 @@ resource "aws_iam_role" "ec2" {
   tags               = merge(var.tags, local.tags)
 }
 
-# https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 resource "aws_iam_role_policy_attachment" "ec2" {
   role       = element(concat(aws_iam_role.ec2.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
@@ -298,18 +302,12 @@ resource "aws_iam_instance_profile" "ec2" {
   role = element(concat(aws_iam_role.ec2.*.name, [""]), 0)
 }
 
-/*
-Allows additional actions for dynamically scaling environments. Required only for clusters that use automatic scaling in Amazon EMR.
-This role is required for all clusters.
-https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
-*/
 resource "aws_iam_role" "ec2_autoscaling" {
   name               = var.emr_autoscaling_role_name
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
   tags               = merge(var.tags, local.tags)
 }
 
-# https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-roles.html
 resource "aws_iam_role_policy_attachment" "ec2_autoscaling" {
   role       = element(concat(aws_iam_role.ec2_autoscaling.*.name, [""]), 0)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforAutoScalingRole"
@@ -319,7 +317,6 @@ resource "aws_emr_cluster" "default" {
   name          = var.emr_cluster_name
   release_label = var.release_label
 
-  # https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-sg-specify.html
   ec2_attributes {
     key_name                          = var.key_name
     subnet_id                         = var.subnet_id

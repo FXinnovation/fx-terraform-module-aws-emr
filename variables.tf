@@ -1,9 +1,3 @@
-variable "zone_id" {
-  type        = string
-  description = "Route53 parent zone ID. If provided (not empty), the module will create sub-domain DNS records for the masters and slaves"
-  default     = null
-}
-
 variable "use_existing_managed_master_security_group" {
   type        = bool
   description = "If set to `true`, will use variable `managed_master_security_group` using an existing security group that was created outside of this module"
@@ -461,7 +455,6 @@ variable "emr_autoscaling_role_name" {
   description = "The name of the iam role assigned to emr"
   default     = "emr_autoscaling_role"
 }
-
 
 variable "vpc_id" {
   description = "ID of the VPC"
