@@ -166,7 +166,6 @@ variable "applications" {
   default     = ["Spark"]
 }
 
-# https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html
 variable "configurations_json" {
   type        = string
   description = "A JSON string for supplying list of configurations for the EMR cluster. See https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html for more details"
@@ -522,19 +521,19 @@ variable "emr_cluster_name" {
 }
 
 variable "core_instance_group_name" {
-  description = "name of the emr clore group"
+  description = "name of the emr core group"
   type        = string
   default     = "emr-core"
 }
 
 variable "master_instance_group_name" {
-  description = "name of the emr clore group"
+  description = "name of the emr master group"
   type        = string
   default     = "emr-master"
 }
 
 variable "task_instance_group_name" {
-  description = "name of the emr clore group"
+  description = "name of the emr task group"
   type        = string
   default     = "emr-task"
 }
