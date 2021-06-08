@@ -10,18 +10,45 @@
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+| aws | >= 3.23.0 |
 
 ## Providers
 
-No provider.
+| Name | Version |
+|------|---------|
+| random | n/a |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| emr_cluster | ../../ |  |
+| s3_log_bucket | git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=2.1.0 |  |
+| vpc | terraform-aws-modules/vpc/aws | 2.70.0 |
+
+## Resources
+
+| Name |
+|------|
+| [random_string](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) |
 
 ## Inputs
 
-No input.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| access\_key | Credentials: AWS access key. | `string` | n/a | yes |
+| secret\_key | Credentials: AWS secret key. Pass this as a variable, never write password in the code. | `string` | n/a | yes |
 
 ## Outputs
 
-No output.
-
+| Name | Description |
+|------|-------------|
+| cluster\_id | EMR cluster ID |
+| cluster\_master\_public\_dns | Master public DNS |
+| cluster\_master\_security\_group\_id | Master security group ID |
+| cluster\_name | EMR cluster name |
+| cluster\_slave\_security\_group\_id | Slave security group ID |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
