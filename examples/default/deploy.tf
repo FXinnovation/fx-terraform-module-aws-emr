@@ -41,7 +41,6 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
   service_name    = format("com.amazonaws.%s.s3", var.region)
   auto_accept     = true
   route_table_ids = tolist(module.vpc.private_route_table_ids)[0]
-  tags            = merge(var.tags, local.tags)
 }
 
 module "emr_cluster" {
