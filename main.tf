@@ -341,7 +341,7 @@ resource "aws_emr_cluster" "default" {
     key_name = var.key_name
 
     # Only one subnet may be specified for clusters configured with instance groups or instance count, master and slave instance type
-    subnet_ids                        = var.subnet_ids[0]
+    subnet_id                         = var.subnet_ids[0]
     emr_managed_master_security_group = var.use_existing_managed_master_security_group == false ? element(concat(aws_security_group.managed_master.*.id, [""]), 0) : var.managed_master_security_group
     emr_managed_slave_security_group  = var.use_existing_managed_slave_security_group == false ? element(concat(aws_security_group.managed_slave.*.id, [""]), 0) : var.managed_slave_security_group
     service_access_security_group     = var.use_existing_service_access_security_group == false && var.subnet_type == "private" ? element(concat(aws_security_group.managed_service_access.*.id, [""]), 0) : var.service_access_security_group
