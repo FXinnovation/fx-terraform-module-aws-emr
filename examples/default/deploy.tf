@@ -35,16 +35,24 @@ module "vpc" {
   dhcp_options_domain_name = "ca-central-1.compute.internal"
 }
 
+resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
+
+  vpc_id          = module.vpc.vpc_id
+  service_name    = format("com.amazonaws.%s.s3", var.region)
+  auto_accept     = true
+  route_table_ids = tolist(module.vpc.private_route_table_ids)[0]
+  tags            = merge(var.tags, local.tags)
+}
+
 module "emr_cluster" {
   source = "../../"
 
-  create_vpc_endpoint_s3                         = true
+  create_vpc_endpoint_s3                         = false
   master_allowed_security_groups                 = []
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"
   vpc_id                                         = module.vpc.vpc_id
   subnet_ids                                     = tolist(module.vpc.private_subnets)
-  route_table_id                                 = tolist(module.vpc.private_route_table_ids)[0]
   subnet_type                                    = "private"
   ebs_root_volume_size                           = 10
   visible_to_all_users                           = true

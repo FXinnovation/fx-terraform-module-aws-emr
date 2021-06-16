@@ -19,6 +19,7 @@
 
 | Name | Version |
 |------|---------|
+| aws | >= 3.23.0 |
 | random | n/a |
 
 ## Modules
@@ -33,6 +34,7 @@
 
 | Name |
 |------|
+| [aws_vpc_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) |
 | [random_string](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) |
 
 ## Inputs
