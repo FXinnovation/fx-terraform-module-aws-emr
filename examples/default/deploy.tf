@@ -38,7 +38,7 @@ module "vpc" {
 resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
 
   vpc_id          = module.vpc.vpc_id
-  service_name    = format("com.amazonaws.%s.s3", var.region)
+  service_name    = "com.amazonaws.ca-central-1.s3"
   auto_accept     = true
   route_table_ids = tolist(module.vpc.private_route_table_ids)[0]
 }
