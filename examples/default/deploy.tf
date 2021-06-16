@@ -38,6 +38,7 @@ module "vpc" {
 module "emr_cluster" {
   source = "../../"
 
+  create_vpc_endpoint_s3                         = false
   master_allowed_security_groups                 = []
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"
