@@ -52,7 +52,7 @@ No Modules.
 | core\_instance\_group\_ebs\_volumes\_per\_instance | The number of EBS volumes with this configuration to attach to each EC2 instance in the Core instance group | `number` | `1` | no |
 | core\_instance\_group\_instance\_count | Target number of instances for the Core instance group. Must be at least 1 | `number` | `1` | no |
 | core\_instance\_group\_instance\_type | EC2 instance type for all instances in the Core instance group | `string` | n/a | yes |
-| core\_instance\_group\_name | name of the emr clore group | `string` | `"emr-core"` | no |
+| core\_instance\_group\_name | name of the emr core group | `string` | `"emr-core"` | no |
 | create\_task\_instance\_group | Whether to create an instance group for Task nodes. For more info: https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html, https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html | `bool` | `false` | no |
 | create\_vpc\_endpoint\_s3 | Set to false to prevent the module from creating VPC S3 Endpoint | `bool` | `true` | no |
 | custom\_ami\_id | A custom Amazon Linux AMI for the cluster (instead of an EMR-owned AMI). Available in Amazon EMR version 5.7.0 and later | `string` | `null` | no |
@@ -85,7 +85,7 @@ No Modules.
 | master\_instance\_group\_ebs\_volumes\_per\_instance | The number of EBS volumes with this configuration to attach to each EC2 instance in the Master instance group | `number` | `1` | no |
 | master\_instance\_group\_instance\_count | Target number of instances for the Master instance group. Must be at least 1 | `number` | `1` | no |
 | master\_instance\_group\_instance\_type | EC2 instance type for all instances in the Master instance group | `string` | n/a | yes |
-| master\_instance\_group\_name | name of the emr clore group | `string` | `"emr-master"` | no |
+| master\_instance\_group\_name | name of the emr master group | `string` | `"emr-master"` | no |
 | master\_security\_group\_name | The name of the  managed security group that will be used for EMR master node. | `string` | `"emr-master-sg"` | no |
 | num\_suffix\_digits | Number of significant digits to append to instances name. | `number` | `2` | no |
 | prefix | Prefix to be added to all resources, except SSM paramter keys. To prefix SSM parameter keys, see `ssm_parameters_prefix`. | `string` | `""` | no |
@@ -117,7 +117,7 @@ No Modules.
 | task\_instance\_group\_ebs\_volumes\_per\_instance | The number of EBS volumes with this configuration to attach to each EC2 instance in the Task instance group | `number` | `1` | no |
 | task\_instance\_group\_instance\_count | Target number of instances for the Task instance group. Must be at least 1 | `number` | `1` | no |
 | task\_instance\_group\_instance\_type | EC2 instance type for all instances in the Task instance group | `string` | `null` | no |
-| task\_instance\_group\_name | name of the emr clore group | `string` | `"emr-task"` | no |
+| task\_instance\_group\_name | name of the emr task group | `string` | `"emr-task"` | no |
 | termination\_protection | Switch on/off termination protection (default is false, except when using multiple master nodes). Before attempting to destroy the resource when termination protection is enabled, this configuration must be applied with its value set to false | `bool` | `false` | no |
 | use\_existing\_additional\_master\_security\_group | If set to `true`, will use variable `additional_master_security_group` using an existing security group that was created outside of this module | `bool` | `false` | no |
 | use\_existing\_additional\_slave\_security\_group | If set to `true`, will use variable `additional_slave_security_group` using an existing security group that was created outside of this module | `bool` | `false` | no |
