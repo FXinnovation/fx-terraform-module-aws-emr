@@ -5,13 +5,13 @@ resource "random_string" "this" {
 }
 
 module "s3_log_bucket" {
-  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=2.1.0"
+  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=3.0.0"
   name   = "${random_string.this.result}-emr-fx-test-log"
 }
 
 module "vpc" {
-  source                   = "terraform-aws-modules/vpc/aws"
-  version                  = "2.70.0"
+  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/mirror-terraform-module-aws-vpc.git?ref=v3.6.0"
+
   name                     = random_string.this.result
   cidr                     = "10.0.0.0/16"
   azs                      = ["ca-central-1a", "ca-central-1b", "ca-central-1d"]

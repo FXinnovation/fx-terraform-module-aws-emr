@@ -27,8 +27,8 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_emr_cluster"></a> [emr\_cluster](#module\_emr\_cluster) | ../../ | n/a |
-| <a name="module_s3_log_bucket"></a> [s3\_log\_bucket](#module\_s3\_log\_bucket) | git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git | 2.1.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 2.70.0 |
+| <a name="module_s3_log_bucket"></a> [s3\_log\_bucket](#module\_s3\_log\_bucket) | git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git | 3.0.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/mirror-terraform-module-aws-vpc.git | v3.6.0 |
 
 ## Resources
 
