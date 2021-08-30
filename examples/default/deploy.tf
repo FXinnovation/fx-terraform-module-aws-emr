@@ -27,6 +27,7 @@ module "vpc" {
 module "emr_cluster" {
   source = "../../"
 
+  prefix                                         = format("%s-emr-test", random_string.this.result)
   master_allowed_security_groups                 = []
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"

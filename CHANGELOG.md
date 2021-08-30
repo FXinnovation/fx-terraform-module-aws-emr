@@ -9,14 +9,15 @@
   * chore: bumps terraform + providers versions in example:
     * pins terraform to >= 0.14.
     * pins aws provider to >= 3.5.
+  * chore: bumps s3 module version to last release (todo: pins version 4.0.0 once
+    new s3 module release is merged).
   * refactor: version constraints, use new syntax.
   * refactor: get rid of empty data.tf file.
-  * fix: license file.
+  * fix: license file: add year + company name.
+  * fix: failing tests, add prefix parameter based on the random string.
   * refactor: lint main.tf file in root module.
   * refactor: providers.tf and versions.tf in example.
   * refactor: use mirror vpc module from internal VCS.
-  * chore: bumps s3 module version to last release (todo: pins version 4.0.0 once
-    new s3 module release is merged).
 
 1.0.1 / 2021-06-16
 ==================
