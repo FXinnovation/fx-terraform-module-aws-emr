@@ -3,12 +3,12 @@
 ==================
 
   * (BREAKING) chore: pins pre-commit-hooks to v4.0.1.
-  * (BREAKING) chore: pins aws provider to >= 3.5.
+  * (BREAKING) chore: pins aws provider to >= 3.2.
   * feat: add pre-commit-afcmf (v0.1.2).
   * chore: pins terraform to >= 0.14.
   * chore: bumps terraform + providers versions in example:
     * pins terraform to >= 0.14.
-    * pins aws provider to >= 3.5.
+    * pins aws provider to >= 3.2.
   * chore: bumps s3 module version to last release (todo: pins version 4.0.0 once
     new s3 module release is merged).
   * refactor: version constraints, use new syntax.
