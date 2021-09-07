@@ -8,7 +8,7 @@
   * chore: pins terraform to >= 0.14.
   * chore: bumps terraform + providers versions in example:
     * pins terraform to >= 0.14.
-    * pins aws provider to >= 3.2.
+    * pins aws provider to >= 3.0.
   * chore: bumps s3 module version to last release (todo: pins version 4.0.0 once
     new s3 module release is merged).
   * refactor: version constraints, use new syntax.
