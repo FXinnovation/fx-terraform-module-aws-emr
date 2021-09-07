@@ -15,6 +15,7 @@
   * refactor: get rid of empty data.tf file.
   * fix: license file: add year + company name.
   * fix: failing tests, add prefix parameter based on the random string.
+  * fix: build failure, add force_destroy parameter to s3 module in example.
   * refactor: lint main.tf file in root module.
   * refactor: providers.tf and versions.tf in example.
   * refactor: use mirror vpc module from internal VCS.

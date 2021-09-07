@@ -5,8 +5,9 @@ resource "random_string" "this" {
 }
 
 module "s3_log_bucket" {
-  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=4.0.0"
-  name   = "${random_string.this.result}-emr-fx-test-log"
+  source        = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=4.0.0"
+  name          = "${random_string.this.result}-emr-fx-test-log"
+  force_destroy = true
 }
 
 module "vpc" {
