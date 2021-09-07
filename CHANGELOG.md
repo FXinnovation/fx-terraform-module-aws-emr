@@ -3,7 +3,7 @@
 ==================
 
   * (BREAKING) chore: pins pre-commit-hooks to v4.0.1.
-  * (BREAKING) chore: pins aws provider to >= 3.2.
+  * (BREAKING) chore: pins aws provider to >= 3.0.
   * feat: add pre-commit-afcmf (v0.1.2).
   * chore: pins terraform to >= 0.14.
   * chore: bumps terraform + providers versions in example:
