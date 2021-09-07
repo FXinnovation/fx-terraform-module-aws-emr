@@ -10,7 +10,7 @@ module "s3_log_bucket" {
 }
 
 module "vpc" {
-  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/mirror-terraform-module-aws-vpc.git?ref=v3.6.0"
+  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/mirror-terraform-module-aws-vpc.git?ref=v3.7.0"
 
   name                     = random_string.this.result
   cidr                     = "10.0.0.0/16"
