@@ -1,14 +1,3 @@
-provider "aws" {
-  region     = "ca-central-1"
-  access_key = var.access_key
-  secret_key = var.secret_key
-
-  assume_role {
-    role_arn     = "arn:aws:iam::700633540182:role/OrganizationAccountAccessRole"
-    session_name = "FXTestSandbox"
-  }
-}
-
 resource "random_string" "this" {
   length  = 8
   upper   = false
@@ -16,13 +5,14 @@ resource "random_string" "this" {
 }
 
 module "s3_log_bucket" {
-  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=2.1.0"
-  name   = "${random_string.this.result}-emr-fx-test-log"
+  source        = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/terraform-module-aws-bucket-s3.git?ref=4.0.0"
+  name          = "${random_string.this.result}-emr-fx-test-log"
+  force_destroy = true
 }
 
 module "vpc" {
-  source                   = "terraform-aws-modules/vpc/aws"
-  version                  = "2.70.0"
+  source = "git::ssh://git@scm.dazzlingwrench.fxinnovation.com:2222/fxinnovation-public/mirror-terraform-module-aws-vpc.git?ref=v3.7.0"
+
   name                     = random_string.this.result
   cidr                     = "10.0.0.0/16"
   azs                      = ["ca-central-1a", "ca-central-1b", "ca-central-1d"]
@@ -38,6 +28,7 @@ module "vpc" {
 module "emr_cluster" {
   source = "../../"
 
+  prefix                                         = format("%s-emr-test", random_string.this.result)
   master_allowed_security_groups                 = []
   slave_allowed_security_groups                  = []
   region                                         = "ca-central-1"

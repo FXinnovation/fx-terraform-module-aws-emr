@@ -3,6 +3,7 @@ locals {
     managed-by = "terraform"
     Terraform  = "True"
   }
+
   bootstrap_action = concat(
     [{
       path = "file:/bin/echo",
@@ -21,6 +22,7 @@ locals {
   }
 }
 
+
 ######
 # security groups
 ######
@@ -32,13 +34,14 @@ resource "aws_security_group" "managed_master" {
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_master_security_group_name)
   description            = "${var.emr_cluster_name}-EmrManagedMasterSecurityGroup"
+
   tags = merge(
     var.tags,
     var.security_group_master_tags,
+    local.tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_master_security_group_name)
-    },
-    local.tags,
+    }
   )
 
   # EMR will update "ingress" and "egress" so we ignore the changes here
@@ -67,13 +70,14 @@ resource "aws_security_group" "managed_slave" {
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_slave_security_group_name)
   description            = "${var.emr_cluster_name}-EmrManagedSlaveSecurityGroup"
+
   tags = merge(
     var.tags,
     var.security_group_slave_tags,
+    local.tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.managed_slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.managed_slave_security_group_name)
-    },
-    local.tags,
+    }
   )
 
   # EMR will update "ingress" and "egress" so we ignore the changes here
@@ -106,10 +110,10 @@ resource "aws_security_group" "managed_service_access" {
   tags = merge(
     var.tags,
     var.security_group_managed_service_tags,
+    local.tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.service_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.service_security_group_name)
-    },
-    local.tags,
+    }
   )
 
   # EMR will update "ingress" and "egress" so we ignore the changes here
@@ -150,13 +154,14 @@ resource "aws_security_group" "master" {
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.master_security_group_name)
   description            = "Allow inbound traffic from Security Groups and CIDRs for masters. Allow all outbound traffic"
+
   tags = merge(
     var.tags,
     var.security_group_master_tags,
+    local.tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.master_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.master_security_group_name)
-    },
-    local.tags,
+    }
   )
 }
 
@@ -203,13 +208,14 @@ resource "aws_security_group" "slave" {
   vpc_id                 = var.vpc_id
   name                   = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.slave_security_group_name)
   description            = "Allow inbound traffic from Security Groups and CIDRs for slaves. Allow all outbound traffic"
+
   tags = merge(
     var.tags,
     var.security_group_slave_tags,
+    local.tags,
     {
       Name = var.use_num_suffix ? format("%s%s-%0${var.num_suffix_digits}d", var.prefix, var.slave_security_group_name, count.index + 1) : format("%s%s", var.prefix, var.slave_security_group_name)
-    },
-    local.tags,
+    }
   )
 }
 
@@ -250,7 +256,6 @@ resource "aws_security_group_rule" "slave_security_groups_65535_egress" {
 }
 
 data "aws_iam_policy_document" "assume_role_emr" {
-
   statement {
     effect = "Allow"
 
@@ -266,6 +271,7 @@ data "aws_iam_policy_document" "assume_role_emr" {
 resource "aws_iam_role" "this" {
   name               = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_role_name) : format("%s%s", var.prefix, var.emr_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
+
   tags = merge(
     var.tags,
     local.tags,
@@ -281,7 +287,6 @@ resource "aws_iam_role_policy_attachment" "this" {
 }
 
 data "aws_iam_policy_document" "assume_role_ec2" {
-
   statement {
     effect = "Allow"
 
@@ -297,6 +302,7 @@ data "aws_iam_policy_document" "assume_role_ec2" {
 resource "aws_iam_role" "ec2" {
   name               = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_ec2_role_name) : format("%s%s", var.prefix, var.emr_ec2_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_ec2.*.json, [""]), 0)
+
   tags = merge(
     var.tags,
     local.tags,
@@ -319,6 +325,7 @@ resource "aws_iam_instance_profile" "ec2" {
 resource "aws_iam_role" "ec2_autoscaling" {
   name               = var.use_num_suffix ? format("%s%s${var.num_suffix_digits}d", var.prefix, var.emr_autoscaling_role_name) : format("%s%s", var.prefix, var.emr_autoscaling_role_name)
   assume_role_policy = element(concat(data.aws_iam_policy_document.assume_role_emr.*.json, [""]), 0)
+
   tags = merge(
     var.tags,
     local.tags,
@@ -395,6 +402,7 @@ resource "aws_emr_cluster" "default" {
 
   dynamic "bootstrap_action" {
     for_each = local.bootstrap_action
+
     content {
       path = bootstrap_action.value.path
       name = bootstrap_action.value.name
@@ -416,9 +424,11 @@ resource "aws_emr_cluster" "default" {
 
   dynamic "step" {
     for_each = var.steps
+
     content {
       name              = step.value.name
       action_on_failure = step.value.action_on_failure
+
       hadoop_jar_step {
         jar        = step.value.hadoop_jar_step["jar"]
         main_class = lookup(step.value.hadoop_jar_step, "main_class", null)
