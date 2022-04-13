@@ -30,8 +30,8 @@ $ terraform apply
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_emr_cluster"></a> [emr\_cluster](#module\_emr\_cluster) | ../../ | n/a |
-| <a name="module_s3_log_bucket"></a> [s3\_log\_bucket](#module\_s3\_log\_bucket) | git::ssh://git@github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git | 4.0.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::ssh://git@github.com/FXinnovation/fx-mirror-terraform-module-aws-vpc.git | v3.7.0 |
+| <a name="module_s3_log_bucket"></a> [s3\_log\_bucket](#module\_s3\_log\_bucket) | github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git | 4.0.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | github.com/FXinnovation/fx-mirror-terraform-module-aws-vpc.git | v3.7.0 |
 
 ## Resources
 
