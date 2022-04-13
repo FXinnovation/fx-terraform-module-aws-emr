@@ -5,13 +5,13 @@ resource "random_string" "this" {
 }
 
 module "s3_log_bucket" {
-  source        = "git::ssh://git@github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git?ref=4.0.0"
+  source        = "github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git?ref=4.0.0"
   name          = "${random_string.this.result}-emr-fx-test-log"
   force_destroy = true
 }
 
 module "vpc" {
-  source = "git::ssh://git@github.com/FXinnovation/fx-mirror-terraform-module-aws-vpc.git?ref=v3.7.0"
+  source = "github.com/FXinnovation/fx-mirror-terraform-module-aws-vpc.git?ref=v3.7.0"
 
   name                     = random_string.this.result
   cidr                     = "10.0.0.0/16"
