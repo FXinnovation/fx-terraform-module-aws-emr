@@ -27,7 +27,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | emr_cluster | ../../ |  |
-| s3_log_bucket | git::ssh://git@github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git?ref=2.1.0 |  |
+| s3_log_bucket | github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git?ref=2.1.0 |  |
 | vpc | terraform-aws-modules/vpc/aws | 2.70.0 |
 
 ## Resources

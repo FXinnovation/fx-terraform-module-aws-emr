@@ -16,7 +16,7 @@ resource "random_string" "this" {
 }
 
 module "s3_log_bucket" {
-  source = "git::ssh://git@github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git?ref=2.1.0"
+  source = "github.com/FXinnovation/fx-terraform-module-aws-bucket-s3.git?ref=2.1.0"
   name   = "${random_string.this.result}-emr-fx-test-log"
 }
 
